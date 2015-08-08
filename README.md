@@ -1,3 +1,3 @@
 # gitdl
 
-## Download zipballs of your most used repositories with a single commad.
+Download GitHub repositories with a single command.
