@@ -1,9 +1,9 @@
-import urllib
-from pprint import pprint
+from urllib.request import urlretrieve
 import requests
 import json
+import os
 
-params = dict(API_TOKEN="61552c37f3ffd44bbe6a3473779895b3d3f2340b")
+params = dict(API_TOKEN=os.environ.get('GITHUB_API_TOKEN'))
 
 url = "https://api.github.com/search/repositories?q={}".format(input())
 
@@ -13,10 +13,11 @@ def main():
     # request.add_header('Authorization', 'token %s' % API_TOKEN)
     response = requests.get(url, params=params).text
     search_results = json.loads(response)
-    download_url = search_results['items'][0]['html_url'] + '/archive/master.zip'
+    first_result = search_results['items'][0]
+    download_url = first_result['html_url'] + '/archive/master.zip'
     print(download_url)
-    urllib.request.urlretrieve(download_url, "{}.zip".format(search_results['items'][0]['name']))
-    print("SAVED")
+    urlretrieve(download_url, "{}.zip".format(first_result['name']))
+    print("{}.zip saved in {}".format(first_result['name'], os.getcwd()))
 
 if __name__ == "__main__":
     main()
