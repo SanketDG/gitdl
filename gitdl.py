@@ -1,11 +1,20 @@
-from urllib.request import urlretrieve
 import requests
 import json
 import os
 
-params = dict(API_TOKEN=os.environ.get('GITHUB_API_TOKEN'))
+API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
+params = {'API_TOKEN': API_TOKEN}
 
 url = "https://api.github.com/search/repositories?q={}".format(input())
+
+
+def urlretrieve(url, path):
+    with open(path, 'wb') as f:
+        r = requests.get(url, stream=True)
+        r.raise_for_status()  # Replace this with better error handling.
+
+        for chunk in r.iter_content(1024):
+            f.write(chunk)
 
 
 def main():
