@@ -30,11 +30,12 @@ def main():
     search_results = json.loads(response)
     first_result = search_results['items'][0]
     download_url = first_result['html_url'] + '/archive/master.zip'
+    repo_name = first_result['name']
     print(download_url)
-    urlretrieve(download_url, "{}.zip".format(first_result['name']))
-    print("{}.zip saved in {}".format(first_result['name'], os.getcwd()))
-    extractfiles("{}.zip".format(first_result['name']))
-    os.rename("{}-master".format(first_result['name']), "{}".format(first_result['name']))
+    urlretrieve(download_url, "{}.zip".format(repo_name))
+    extractfiles("{}.zip".format(repo_name))
+    os.rename("{}-master".format(repo_name), "{}".format(repo_name))
+    os.unlink("{}.zip".format(repo_name))
 
 if __name__ == "__main__":
     main()
