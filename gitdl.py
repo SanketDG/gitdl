@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import zipfile
 
 API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
 params = {'API_TOKEN': API_TOKEN}
@@ -17,6 +18,11 @@ def urlretrieve(url, path):
             f.write(chunk)
 
 
+def extractfiles(zipf):
+    with zipfile.ZipFile(zipf, "r") as z:
+        z.extractall()
+
+
 def main():
     # request = urllib.request.Request(url)
     # request.add_header('Authorization', 'token %s' % API_TOKEN)
@@ -27,6 +33,8 @@ def main():
     print(download_url)
     urlretrieve(download_url, "{}.zip".format(first_result['name']))
     print("{}.zip saved in {}".format(first_result['name'], os.getcwd()))
+    extractfiles("{}.zip".format(first_result['name']))
+    os.rename("{}-master".format(first_result['name']), "{}".format(first_result['name']))
 
 if __name__ == "__main__":
     main()
