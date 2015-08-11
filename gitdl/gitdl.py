@@ -1,12 +1,18 @@
 import requests
-import json
 import os
 import zipfile
+import sys
 
 API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
-params = {'API_TOKEN': API_TOKEN}  # create a dict to be passed by the request
 
-url = "https://api.github.com/search/repositories?q={}".format(input())
+url = "https://api.github.com/search/repositories?q={}".format(sys.argv[1])
+
+
+def get_params():
+    if API_TOKEN is None:
+        raise Exception('GITHUB_API_TOKEN not found')
+    params = {'API_TOKEN': API_TOKEN}  # create a dict to be passed by request
+    return params
 
 
 def urlretrieve(url, path):
@@ -24,9 +30,8 @@ def extractfiles(zipf):
 
 
 def main():
-    response = requests.get(url, params=params).text
-    search_results = json.loads(response)
-    first_result = search_results['items'][0]  # takes out the first result
+    response = requests.get(url, params=get_params()).json()
+    first_result = response['items'][0]  # takes out the first result
     download_url = first_result['html_url'] + '/archive/master.zip'
     repo_name = first_result['name']  # stores the repository name
     print(download_url)
