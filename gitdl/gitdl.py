@@ -1,7 +1,7 @@
 import requests
 import os
 import zipfile
-import sys
+import argparse
 
 API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
 
@@ -46,8 +46,12 @@ def work_them_files(repo_name):
 
 
 def main():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("repo", help="the repository to download")
+    args = parser.parse_args()
     # send a GET to search url in GitHub API
-    url = "https://api.github.com/search/repositories?q={}".format(sys.argv[1])
+    url = "https://api.github.com/search/repositories?q={}".format(args.repo)
     response = requests.get(url, params=get_params()).json()
 
     first_result = get_first_search_result(response)  # check for empty response
