@@ -1,7 +1,22 @@
+"""
+
+gitdl - download github repositories easily!
+
+Arguments:
+   REPO   Repository to download
+
+Usage:
+  gitdl REPO
+  gitdl -h | --help
+
+ Options:
+   -h, --help       Show this message.
+"""
+
 import requests
 import os
 import zipfile
-import argparse
+from docopt import docopt
 
 API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
 
@@ -47,11 +62,9 @@ def work_them_files(repo_name):
 
 def main():
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("repo", help="the repository to download")
-    args = parser.parse_args()
+    args = docopt(__doc__)
     # send a GET to search url in GitHub API
-    url = "https://api.github.com/search/repositories?q={}".format(args.repo)
+    url = "https://api.github.com/search/repositories?q={}".format(args['REPO'])
     response = requests.get(url, params=get_params()).json()
 
     first_result = get_first_search_result(response)  # check for empty response
