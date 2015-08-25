@@ -8,15 +8,18 @@ Arguments:
 Usage:
   gitdl REPO
   gitdl -h | --help
+  gitdl --version
 
  Options:
-   -h, --help       Show this message.
+   -h --help    Show this message.
+   --version    Show version
 """
 
 import requests
 import os
 import zipfile
 from docopt import docopt
+from . import __version__
 
 API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
 
@@ -62,7 +65,7 @@ def work_them_files(repo_name):
 
 def main():
 
-    args = docopt(__doc__)
+    args = docopt(__doc__, version=__version__)
     # send a GET to search url in GitHub API
     url = "https://api.github.com/search/repositories?q={}".format(args['REPO'])
     response = requests.get(url, params=get_params()).json()

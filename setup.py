@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='gitdl',
-    version='0.1',
+    version='gitdl.__version__',
     description='Download git repositories locally',
     long_description="",
     author='Sanket Dasgupta',
