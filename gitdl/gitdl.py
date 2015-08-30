@@ -52,8 +52,7 @@ def get_first_search_result(resp):
         first_result = resp['items'][0]
         return first_result
     except IndexError:
-        print("No such repository exists.")
-        exit(1)
+        raise Exception("Repository Not Found.")
 
 
 def work_them_files(repo_name):
