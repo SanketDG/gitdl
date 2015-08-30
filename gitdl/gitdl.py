@@ -24,8 +24,10 @@ from . import __version__
 API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
 
 
-def get_params():
-    """Set parameters of the request"""
+def get_params(API_TOKEN):
+    """
+    Set parameters of the request using GITHUB_API_TOKEN environment variable
+    """
     if API_TOKEN is None:
         raise Exception('GITHUB_API_TOKEN not found')
     params = {'API_TOKEN': API_TOKEN}  # create a dict to be passed by request
@@ -33,7 +35,9 @@ def get_params():
 
 
 def urlretrieve(url, path):
-    """Retrieves a zipfile and writes it to a local disk"""
+    """
+    Retrieves a zipfile and writes it to a local disk
+    """
     with open(path, 'wb') as f:
         r = requests.get(url, stream=True)
         for chunk in r.iter_content(1024):
@@ -41,13 +45,17 @@ def urlretrieve(url, path):
 
 
 def extractfiles(zipf):
-    """Extract a zipfile to the current directory"""
+    """
+    Extract a zipfile to the current directory
+    """
     with zipfile.ZipFile(zipf, "r") as z:
         z.extractall()
 
 
 def get_first_search_result(resp):
-    "Gets first search result from json response"
+    """
+    Gets first search result from json response
+    """
     try:
         first_result = resp['items'][0]
         return first_result
@@ -56,7 +64,9 @@ def get_first_search_result(resp):
 
 
 def work_them_files(repo_name):
-    "Extract, rename and delete."
+    """
+    Extract, rename and delete.
+    """
     extractfiles("{}.zip".format(repo_name))
     os.rename("{}-master".format(repo_name), "{}".format(repo_name))
     os.unlink("{}.zip".format(repo_name))
