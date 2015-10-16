@@ -73,10 +73,10 @@ def work_them_files(repo_name):
     os.unlink("{}.zip".format(repo_name))
 
 
-def print_results(response):
+def get_search_results(response):
     items = response['items']
-    for item in items:
-        print(item['name'])
+    repo_names = [item['name'] for item in items]
+    return repo_names
 
 
 def main():
@@ -90,7 +90,9 @@ def main():
 
     # if search is used, then print the results
     if args['search']:
-        print_results(response)
+        results = get_search_results(response)
+        for result in results:
+            print(result)
     else:
         first_result = get_first_search_result(
             response)
