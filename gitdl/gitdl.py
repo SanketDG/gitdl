@@ -6,7 +6,8 @@ Arguments:
    REPO   Repository to download
 
 Usage:
-  gitdl REPO
+  gitdl search <REPO> [--sort <field> ( --asc | --desc )]
+  gitdl <REPO>
   gitdl -h | --help
   gitdl --version
 
@@ -72,22 +73,35 @@ def work_them_files(repo_name):
     os.unlink("{}.zip".format(repo_name))
 
 
+def print_results(response):
+    items = response['items']
+    for item in items:
+        print(item['name'])
+
+
 def main():
 
     args = docopt(__doc__, version=__version__)
+
     # send a GET to search url in GitHub API
-    url = "https://api.github.com/search/repositories?q={}".format(args['REPO'])
-    response = requests.get(url, params=get_params()).json()
+    url = "https://api.github.com/search/repositories?q={}".format(
+        args['<REPO>'])
+    response = requests.get(url, params=get_params(API_TOKEN)).json()
 
-    first_result = get_first_search_result(response)  # check for empty response
+    # if search is used, then print the results
+    if args['search']:
+        print_results(response)
+    else:
+        first_result = get_first_search_result(
+            response)
 
-    download_url = first_result['html_url'] + '/archive/master.zip'
-    repo_name = first_result['name']  # stores the repository name
-    print(download_url)
+        download_url = first_result['html_url'] + '/archive/master.zip'
+        repo_name = first_result['name']  # stores the repository name
+        print(download_url)
 
-    urlretrieve(download_url, "{}.zip".format(repo_name))
+        urlretrieve(download_url, "{}.zip".format(repo_name))
 
-    work_them_files(repo_name)
+        work_them_files(repo_name)
 
 
 if __name__ == "__main__":
