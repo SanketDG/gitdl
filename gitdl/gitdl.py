@@ -129,7 +129,7 @@ def main():
 
         for result in results:
             print(result)
-    if args.get('--exact'):
+    elif args["--exact"]:
         download_exact_repo(args["<REPO>"])
     else:
         first_result = get_search_results(repo, only_first=True)
