@@ -111,7 +111,7 @@ def download_exact_repo(repo):
     url = "https://api.github.com/repos/{}".format(repo)
     response = requests.get(url, params=get_params(API_TOKEN))
     if response.status_code == 404:
-        raise Exception("Invalid Repository Name")
+        raise Exception("Repository Not Found.")
     response = response.json()
     download_zip_and_extract(response)
 

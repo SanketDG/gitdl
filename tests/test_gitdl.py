@@ -34,3 +34,10 @@ class TestGitdl:
         with pytest.raises(Exception) as exc_info:
             gitdl.get_first_search_result(response)
         assert str(exc_info.value) == "Repository Not Found."
+
+    def test_download_exact_repo_invalid_repo(self):
+        # does not contain the slash required for owner/repo format
+        repo = "example"
+        with pytest.raises(Exception) as exc_info:
+            gitdl.download_exact_repo(repo)
+        assert str(exc_info.value) == "Repository Not Found."
