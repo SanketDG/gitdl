@@ -64,12 +64,12 @@ def get_first_search_result(resp):
         raise Exception("Repository Not Found.")
 
 
-def work_them_files(repo_name):
+def work_them_files(repo_name, branch):
     """
     Extract, rename and delete.
     """
     extractfiles("{}.zip".format(repo_name))
-    os.rename("{}-master".format(repo_name), "{}".format(repo_name))
+    os.rename("{}-{}".format(repo_name, branch), "{}".format(repo_name))
     os.unlink("{}.zip".format(repo_name))
 
 
@@ -110,15 +110,15 @@ def main():
             print(result)
     else:
         first_result = get_search_results(repo, only_first=True)
-
+        default_branch = first_result['default_branch']
         download_url = "{}/archive/{}.zip".format(
-            first_result['html_url'], first_result['default_branch'])
+            first_result['html_url'], default_branch)
         repo_name = first_result['name']  # stores the repository name
         print(download_url)
 
         urlretrieve(download_url, "{}.zip".format(repo_name))
 
-        work_them_files(repo_name)
+        work_them_files(repo_name, default_branch)
 
 
 if __name__ == "__main__":
