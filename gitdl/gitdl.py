@@ -82,8 +82,9 @@ def get_repo_names(response):
 def get_search_results(search_term, sort_field="", sort_order="desc",
                        only_first=False):
     # send a GET to search url in GitHub API
-    url = "https://api.github.com/search/repositories? \
-            q={}&sort={}&order={}".format(search_term, sort_order, sort_field)
+    url = "https://api.github.com/search/repositories?"\
+            "q={}&sort={}&order={}".format(search_term, sort_field, sort_order)
+    print(url)
     response = requests.get(url, params=get_params(API_TOKEN)).json()
     if only_first:
         result = get_first_search_result(response)
