@@ -107,6 +107,15 @@ def download_zip_and_extract(repo_json):
     work_them_files(repo_name, default_branch)
 
 
+def download_exact_repo(repo):
+    url = "https://api.github.com/repos/{}".format(repo)
+    response = requests.get(url, params=get_params(API_TOKEN))
+    if response.status_code == 404:
+        raise Exception("Invalid Repository Name")
+    response = response.json()
+    download_zip_and_extract(response)
+
+
 def main():
 
     args = docopt(__doc__, version=__version__)
@@ -122,13 +131,7 @@ def main():
         for result in results:
             print(result)
     if args.get('--exact'):
-        full_repo_name = args['<REPO>']
-        url = "https://api.github.com/repos/{}".format(full_repo_name)
-        response = requests.get(url, params=get_params(API_TOKEN))
-        if response.status_code == 404:
-            raise Exception("Invalid Repository Name")
-        response = response.json()
-        download_zip_and_extract(response)
+        download_exact_repo(args["<REPO>"])
     else:
         first_result = get_search_results(repo, only_first=True)
         download_zip_and_extract(first_result)
