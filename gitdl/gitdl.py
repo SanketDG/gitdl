@@ -101,10 +101,10 @@ def main():
     repo = args['<REPO>']
     # if search is used, then print the results
     if args['search']:
-        sort_order = 'asc' if args.get('asc') else 'desc'
+        sort_order = 'asc' if args.get('--asc') else 'desc'
         if args['--sort']:
             sort_field = args['<field>']
-        results = get_search_results(repo, sort_order, sort_field)
+        results = get_search_results(repo, sort_field, sort_order)
 
         for result in results:
             print(result)
