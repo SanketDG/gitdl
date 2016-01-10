@@ -73,29 +73,42 @@ def work_them_files(repo_name):
     os.unlink("{}.zip".format(repo_name))
 
 
-def get_search_results(response):
+def get_repo_names(response):
     items = response['items']
     repo_names = [item['name'] for item in items]
     return repo_names
+
+
+def get_search_results(search_term, sort_field="", sort_order="desc",
+                       only_first=False):
+    # send a GET to search url in GitHub API
+    url = "https://api.github.com/search/repositories? \
+            q={}&sort={}&order={}".format(search_term, sort_order, sort_field)
+    response = requests.get(url, params=get_params(API_TOKEN)).json()
+    if only_first:
+        result = get_first_search_result(response)
+    else:
+        # fetch results
+        result = get_repo_names(response)
+    return result
 
 
 def main():
 
     args = docopt(__doc__, version=__version__)
 
-    # send a GET to search url in GitHub API
-    url = "https://api.github.com/search/repositories?q={}".format(
-        args['<REPO>'])
-    response = requests.get(url, params=get_params(API_TOKEN)).json()
-
+    repo = args['<REPO>']
     # if search is used, then print the results
     if args['search']:
-        results = get_search_results(response)
+        sort_order = 'asc' if args.get('asc') else 'desc'
+        if args['--sort']:
+            sort_field = args['<field>']
+        results = get_search_results(repo, sort_order, sort_field)
+
         for result in results:
             print(result)
     else:
-        first_result = get_first_search_result(
-            response)
+        first_result = get_search_results(repo, only_first=True)
 
         download_url = first_result['html_url'] + '/archive/master.zip'
         repo_name = first_result['name']  # stores the repository name
