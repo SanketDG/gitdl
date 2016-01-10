@@ -7,13 +7,14 @@ Arguments:
 
 Usage:
   gitdl search <REPO> [--sort <field> ( --asc | --desc )]
-  gitdl <REPO>
+  gitdl <REPO> [-e]
   gitdl -h | --help
   gitdl --version
 
  Options:
-   -h --help    Show this message.
-   --version    Show version
+   -e, --exact  Download exact repository
+   -h, --help   Show this message.
+   -v, --version    Show version
 """
 
 import requests
@@ -94,6 +95,18 @@ def get_search_results(search_term, sort_field="", sort_order="desc",
     return result
 
 
+def download_zip_and_extract(repo_json):
+    default_branch = repo_json['default_branch']
+    download_url = "{}/archive/{}.zip".format(
+        repo_json['html_url'], default_branch)
+    repo_name = repo_json['name']  # stores the repository name
+    print(download_url)
+
+    urlretrieve(download_url, "{}.zip".format(repo_name))
+
+    work_them_files(repo_name, default_branch)
+
+
 def main():
 
     args = docopt(__doc__, version=__version__)
@@ -108,17 +121,17 @@ def main():
 
         for result in results:
             print(result)
+    if args.get('--exact'):
+        full_repo_name = args['<REPO>']
+        url = "https://api.github.com/repos/{}".format(full_repo_name)
+        response = requests.get(url, params=get_params(API_TOKEN))
+        if response.status_code == 404:
+            raise Exception("Invalid Repository Name")
+        response = response.json()
+        download_zip_and_extract(response)
     else:
         first_result = get_search_results(repo, only_first=True)
-        default_branch = first_result['default_branch']
-        download_url = "{}/archive/{}.zip".format(
-            first_result['html_url'], default_branch)
-        repo_name = first_result['name']  # stores the repository name
-        print(download_url)
-
-        urlretrieve(download_url, "{}.zip".format(repo_name))
-
-        work_them_files(repo_name, default_branch)
+        download_zip_and_extract(first_result)
 
 
 if __name__ == "__main__":
