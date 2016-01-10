@@ -75,7 +75,7 @@ def work_them_files(repo_name):
 
 def get_repo_names(response):
     items = response['items']
-    repo_names = [item['name'] for item in items]
+    repo_names = [item['full_name'] for item in items]
     return repo_names
 
 
