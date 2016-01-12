@@ -20,7 +20,10 @@ Usage:
 import requests
 import os
 import zipfile
+
 from docopt import docopt
+from tabulate import tabulate
+
 from . import __version__
 
 API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
@@ -89,10 +92,10 @@ def get_search_results(search_term, sort_field="", sort_order="desc",
     response = requests.get(url, params=get_params(API_TOKEN)).json()
     if only_first:
         result = get_first_search_result(response)
+        return result
     else:
-        # fetch results
-        result = get_repo_names(response)
-    return result
+        # return the whole json
+        return response
 
 
 def download_zip_and_extract(repo_json):
@@ -116,6 +119,28 @@ def download_exact_repo(repo):
     download_zip_and_extract(response)
 
 
+def tabulate_view(search_results):
+    table = []
+    # headers for the table
+    headers = ['Name', 'Stars', 'Forks', 'Language', 'Last Pushed']
+    # loop through each of the items containing the repo data
+    for repo_data in search_results["items"]:
+
+        # collect necessary data
+        repo_name = repo_data['full_name']
+        repo_stars = repo_data['stargazers_count']
+        repo_forks = repo_data['forks_count']
+        repo_language = repo_data['language']
+        updated_at = repo_data['pushed_at']
+
+        repo_row = [repo_name, repo_stars, repo_forks, repo_language, updated_at]
+
+        table.append(repo_row)
+
+    # display in tabulate format
+    print(tabulate(table, headers, tablefmt="grid"))
+
+
 def main():
 
     args = docopt(__doc__, version=__version__)
@@ -127,8 +152,7 @@ def main():
         sort_field = args['<field>'] if args['--sort'] else None
         results = get_search_results(repo, sort_field, sort_order)
 
-        for result in results:
-            print(result)
+        tabulate_view(results)
     elif args["--exact"]:
         download_exact_repo(args["<REPO>"])
     else:
