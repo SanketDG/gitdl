@@ -9,7 +9,7 @@ setup(
     author_email='sanketdasgupta@gmail.com',
     license='MIT',
     packages=find_packages(),
-    install_requires=['requests', 'docopt'],
+    install_requires=['requests', 'docopt', 'tabulate'],
     entry_points={
         'console_scripts': [
             'gitdl=gitdl.gitdl:main',
