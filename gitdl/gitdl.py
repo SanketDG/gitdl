@@ -99,8 +99,8 @@ def get_repo_names(response):
     return repo_names
 
 
-def get_search_results(search_term, sort_field="", sort_order="desc",
-                       per_page="", only_first=False):
+def get_search_results(search_term, sort_field, sort_order,
+                       per_page, only_first=False):
     # send a GET to search url in GitHub API
     url = "https://api.github.com/search/repositories?"\
         "q={}&sort={}&order={}&per_page={}".format(search_term, sort_field,
@@ -169,8 +169,8 @@ def main():
     # if search is used, then print the results
     if args['search']:
         sort_order = 'asc' if args.get('--asc') else 'desc'
-        sort_field = args['<field>'] if args['--sort'] else None
-        per_page = args['<display>'] if args['--per_page'] else None
+        sort_field = args['<field>'] if args['--sort'] else ""
+        per_page = args['<display>'] if args['--per_page'] else ""
         results = get_search_results(repo, sort_field, sort_order, per_page)
 
         tabulate_view(results)
