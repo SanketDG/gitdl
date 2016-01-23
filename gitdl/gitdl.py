@@ -23,6 +23,7 @@ import zipfile
 
 from docopt import docopt
 from tabulate import tabulate
+from tqdm import tqdm
 
 from . import __version__
 
@@ -39,13 +40,27 @@ def get_params(API_TOKEN):
     return params
 
 
+def get_size(request):
+    """
+    Retrieves a size of a request object in KB.
+    """
+    # get the 'Content-Length' response and convert it to int
+    size = int(request.headers.get('Content-Length'))
+    # convert bytes to KB
+    size /= 1024
+    # round to two decimal places
+    size = round(size, 2)
+    return size
+
+
 def urlretrieve(url, path):
     """
     Retrieves a zipfile and writes it to a local disk
     """
     with open(path, 'wb') as f:
         r = requests.get(url, stream=True)
-        for chunk in r.iter_content(1024):
+        for chunk in tqdm(r.iter_content(1024), unit='k',
+                          total=get_size(r), ncols=100):
             f.write(chunk)
 
 
@@ -133,7 +148,10 @@ def tabulate_view(search_results):
         repo_language = repo_data['language']
         updated_at = repo_data['pushed_at']
 
-        repo_row = [repo_name, repo_stars, repo_forks, repo_language, updated_at]
+        repo_row = [
+            repo_name, repo_stars, repo_forks,
+            repo_language, updated_at
+        ]
 
         table.append(repo_row)
 
