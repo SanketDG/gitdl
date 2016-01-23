@@ -6,7 +6,8 @@ Arguments:
    REPO   Repository to download
 
 Usage:
-  gitdl search <REPO> [--sort <field> ( --asc | --desc )]
+  gitdl search <REPO> [--sort <sort_field> ( --asc | --desc )]
+  gitdl search <REPO> [--per_page <display>]
   gitdl <REPO> [-e]
   gitdl -h | --help
   gitdl --version
@@ -99,10 +100,11 @@ def get_repo_names(response):
 
 
 def get_search_results(search_term, sort_field="", sort_order="desc",
-                       only_first=False):
+                       per_page="", only_first=False):
     # send a GET to search url in GitHub API
     url = "https://api.github.com/search/repositories?"\
-        "q={}&sort={}&order={}".format(search_term, sort_field, sort_order)
+        "q={}&sort={}&order={}&per_page={}".format(search_term, sort_field,
+                                                   sort_order, per_page)
     print(url)
     response = requests.get(url, params=get_params(API_TOKEN)).json()
     if only_first:
@@ -168,7 +170,8 @@ def main():
     if args['search']:
         sort_order = 'asc' if args.get('--asc') else 'desc'
         sort_field = args['<field>'] if args['--sort'] else None
-        results = get_search_results(repo, sort_field, sort_order)
+        per_page = args['<display>'] if args['--per_page'] else None
+        results = get_search_results(repo, sort_field, sort_order, per_page)
 
         tabulate_view(results)
     elif args["--exact"]:
