@@ -139,7 +139,7 @@ def download_exact_repo(repo):
 def tabulate_view(search_results):
     table = []
     # headers for the table
-    headers = ['Name', 'Stars', 'Forks', 'Language', 'Last Pushed']
+    headers = ['Name', 'Stars', 'Forks', 'Language', 'Last Updated']
     # loop through each of the items containing the repo data
     for repo_data in search_results["items"]:
 
