@@ -175,7 +175,7 @@ def main():
 
         tabulate_view(results)
     elif args["--exact"]:
-        download_exact_repo(args["<REPO>"])
+        download_exact_repo(repo)
     else:
         first_result = get_search_results(repo, only_first=True)
         download_zip_and_extract(first_result)
