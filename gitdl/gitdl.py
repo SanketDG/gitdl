@@ -112,7 +112,6 @@ def get_search_results(search_term, sort_field="", sort_order="desc",
            "q={}&sort={}&order={}&per_page={}".format(search_term, sort_field,
                                                       sort_order,
                                                       str(per_page)))
-    print(url)
     response = requests.get(url, params=get_params(API_TOKEN)).json()
     if only_first:
         result = get_first_search_result(response)
@@ -127,7 +126,6 @@ def download_zip_and_extract(repo_json):
     download_url = "{}/archive/{}.zip".format(
         repo_json['html_url'], default_branch)
     repo_name = repo_json['name']  # stores the repository name
-    print(download_url)
 
     urlretrieve(download_url, "{}.zip".format(repo_name))
 
