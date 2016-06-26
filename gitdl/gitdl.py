@@ -18,8 +18,8 @@ Usage:
    -v, --version    Show version
 """
 
-import requests
 import os
+import requests
 import zipfile
 
 from docopt import docopt
