@@ -29,13 +29,12 @@ from tqdm import tqdm
 
 from . import __version__
 
-API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
 
-
-def get_params(API_TOKEN):
+def get_params():
     """
     Set parameters of the request using GITHUB_API_TOKEN environment variable
     """
+    API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
     if API_TOKEN is None:
         raise Exception('GITHUB_API_TOKEN not found')
     params = {'API_TOKEN': API_TOKEN}  # create a dict to be passed by request
@@ -112,7 +111,7 @@ def get_search_results(search_term, sort_field="", sort_order="desc",
            "q={}&sort={}&order={}&per_page={}".format(search_term, sort_field,
                                                       sort_order,
                                                       str(per_page)))
-    response = requests.get(url, params=get_params(API_TOKEN)).json()
+    response = requests.get(url, params=get_params()).json()
     if only_first:
         result = get_first_search_result(response)
         return result
@@ -134,7 +133,7 @@ def download_zip_and_extract(repo_json):  # pragma: no cover
 
 def download_exact_repo(repo):  # pragma: no cover
     url = "https://api.github.com/repos/{}".format(repo)
-    response = requests.get(url, params=get_params(API_TOKEN))
+    response = requests.get(url, params=get_params())
     if response.status_code == 404:
         raise Exception("Repository Not Found.")
     response = response.json()
