@@ -99,12 +99,13 @@ def get_repo_names(response):
     return repo_names
 
 
-def get_search_results(search_term, sort_field, sort_order,
-                       per_page, only_first=False):
+def get_search_results(search_term, sort_field="", sort_order="desc",
+                       per_page=30, only_first=False):
     # send a GET to search url in GitHub API
-    url = "https://api.github.com/search/repositories?"\
-        "q={}&sort={}&order={}&per_page={}".format(search_term, sort_field,
-                                                   sort_order, per_page)
+    url = ("https://api.github.com/search/repositories?"
+           "q={}&sort={}&order={}&per_page={}".format(search_term, sort_field,
+                                                      sort_order,
+                                                      str(per_page)))
     print(url)
     response = requests.get(url, params=get_params(API_TOKEN)).json()
     if only_first:
