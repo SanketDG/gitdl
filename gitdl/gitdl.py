@@ -20,6 +20,7 @@ Usage:
 
 import os
 import requests
+import shutil
 import zipfile
 
 from docopt import docopt
@@ -89,8 +90,13 @@ def work_them_files(repo_name, branch):
     Extract, rename and delete.
     """
     extractfiles("{}.zip".format(repo_name))
-    os.rename("{}-{}".format(repo_name, branch), "{}".format(repo_name))
-    os.unlink("{}.zip".format(repo_name))
+    try:
+        os.rename("{}-{}".format(repo_name, branch), "{}".format(repo_name))
+    except OSError:
+        print("The directory {} already exists!".format(repo_name))
+        shutil.rmtree("{}-{}".format(repo_name, branch))
+    finally:
+        os.unlink("{}.zip".format(repo_name))
 
 
 def get_repo_names(response):
