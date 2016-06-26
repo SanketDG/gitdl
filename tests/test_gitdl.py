@@ -23,17 +23,19 @@ from gitdl import gitdl
 class TestGitdl(unittest.TestCase):
 
     def test_params_invalid_api_token(self):
-        with patch.dict('os.environ', {}):
-            API_TOKEN = os.environ.get("RANDOM-KEY")
+        old_env = os.environ
+        os.environ = {}
         with pytest.raises(Exception) as exc_info:
-            gitdl.get_params(API_TOKEN)
+                gitdl.get_params()
+        os.environ = old_env
         assert str(exc_info.value) == "GITHUB_API_TOKEN not found"
 
     def test_params_valid_api_token(self):
-        with patch.dict('os.environ', {"GITHUB_API_TOKEN": "key123"}):
-            API_TOKEN = os.environ.get("GITHUB_API_TOKEN")
-            assert gitdl.get_params(API_TOKEN).get('API_TOKEN') == \
-                os.environ.get("GITHUB_API_TOKEN")
+        old_env = os.environ
+        os.environ = {"GITHUB_API_TOKEN": "key123"}
+        assert gitdl.get_params().get('API_TOKEN') == \
+            os.environ.get("GITHUB_API_TOKEN")
+        os.environ = old_env
 
     def test_get_first_search_result_invalid(self):
         fake_json = json.dumps({'items': []})
@@ -52,7 +54,8 @@ class TestGitdl(unittest.TestCase):
             mocker.get("https://api.github.com/repos/{}".format(repo),
                        status_code=404)
             with pytest.raises(Exception) as exc_info:
-                gitdl.download_exact_repo(repo)
+                with patch.dict('os.environ', {"GITHUB_API_TOKEN": "key123"}):
+                    gitdl.download_exact_repo(repo)
             assert str(exc_info.value) == "Repository Not Found."
 
     def test_get_size(self):
@@ -67,7 +70,8 @@ class TestGitdl(unittest.TestCase):
             mocker.get("https://api.github.com/search/repositories?"
                        "q=gitdl&sort=&order=desc&per_page=30",
                        json="Found 3 repos!")
-            resp = gitdl.get_search_results("gitdl")
+            with patch.dict('os.environ', {"GITHUB_API_TOKEN": "key123"}):
+                resp = gitdl.get_search_results("gitdl")
         self.assertEqual(resp, "Found 3 repos!")
 
     def test_get_first_search_result_valid(self):
@@ -96,5 +100,6 @@ class TestGitdl(unittest.TestCase):
             mocker.get("https://api.github.com/search/repositories?"
                        "q=gitdl&sort=&order=desc&per_page=30",
                        json=fake_json)
-            resp = gitdl.get_search_results("gitdl", only_first=True)
+            with patch.dict('os.environ', {"GITHUB_API_TOKEN": "key123"}):
+                resp = gitdl.get_search_results("gitdl", only_first=True)
         self.assertEqual(resp, {'id': 1, 'name': 'gitdl'})
