@@ -55,7 +55,7 @@ def get_size(request):
     return size
 
 
-def urlretrieve(url, path):
+def urlretrieve(url, path):  # pragma: no cover
     """
     Retrieves a zipfile and writes it to a local disk
     """
@@ -66,7 +66,7 @@ def urlretrieve(url, path):
             f.write(chunk)
 
 
-def extractfiles(zipf):
+def extractfiles(zipf):  # pragma: no cover
     """
     Extract a zipfile to the current directory
     """
@@ -85,7 +85,7 @@ def get_first_search_result(resp):
         raise Exception("Repository Not Found.")
 
 
-def work_them_files(repo_name, branch):
+def work_them_files(repo_name, branch):  # pragma: no cover
     """
     Extract, rename and delete.
     """
@@ -121,7 +121,7 @@ def get_search_results(search_term, sort_field="", sort_order="desc",
         return response
 
 
-def download_zip_and_extract(repo_json):
+def download_zip_and_extract(repo_json):  # pragma: no cover
     default_branch = repo_json['default_branch']
     download_url = "{}/archive/{}.zip".format(
         repo_json['html_url'], default_branch)
@@ -132,7 +132,7 @@ def download_zip_and_extract(repo_json):
     work_them_files(repo_name, default_branch)
 
 
-def download_exact_repo(repo):
+def download_exact_repo(repo):  # pragma: no cover
     url = "https://api.github.com/repos/{}".format(repo)
     response = requests.get(url, params=get_params(API_TOKEN))
     if response.status_code == 404:
@@ -141,7 +141,7 @@ def download_exact_repo(repo):
     download_zip_and_extract(response)
 
 
-def tabulate_view(search_results):
+def tabulate_view(search_results):  # pragma: no cover
     table = []
     # headers for the table
     headers = ['Name', 'Stars', 'Forks', 'Language', 'Last Updated']
@@ -165,7 +165,7 @@ def tabulate_view(search_results):
     return table, headers
 
 
-def main():
+def main():  # pragma: no cover
 
     args = docopt(__doc__, version=__version__)
 
