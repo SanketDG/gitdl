@@ -162,8 +162,7 @@ def tabulate_view(search_results):
 
         table.append(repo_row)
 
-    # display in tabulate format
-    print(tabulate(table, headers, tablefmt="grid"))
+    return table, headers
 
 
 def main():
@@ -178,7 +177,8 @@ def main():
         per_page = args['<display>'] if args['--per_page'] else ""
         results = get_search_results(repo, sort_field, sort_order, per_page)
 
-        tabulate_view(results)
+        table, headers = tabulate_view(results)
+        print(tabulate(table, headers, tablefmt="grid"))
     elif args["--exact"]:
         download_exact_repo(repo)
     else:
