@@ -6,10 +6,12 @@ test_gitdl
 Tests for `gitdl` module.
 """
 
+import json
 import os
 import pytest
 
 import requests
+import requests_mock
 
 from gitdl import gitdl
 
@@ -28,8 +30,11 @@ class TestGitdl:
             os.environ.get("GITHUB_API_TOKEN")
 
     def test_get_first_search_result_invalid(self):
+        fake_json = json.dumps({'items': []})
         url = "https://api.github.com/search/repositories?q=aksejake"
-        response = requests.get(url).json()
+        with requests_mock.mock() as mocker:
+            mocker.get(url, json=fake_json)
+            response = json.loads(requests.get(url).json())
         with pytest.raises(Exception) as exc_info:
             gitdl.get_first_search_result(response)
         assert str(exc_info.value) == "Repository Not Found."
@@ -37,6 +42,9 @@ class TestGitdl:
     def test_download_exact_repo_invalid_repo(self):
         # does not contain the slash required for owner/repo format
         repo = "example"
-        with pytest.raises(Exception) as exc_info:
-            gitdl.download_exact_repo(repo)
-        assert str(exc_info.value) == "Repository Not Found."
+        with requests_mock.mock() as mocker:
+            mocker.get("https://api.github.com/repos/{}".format(repo),
+                       status_code=404)
+            with pytest.raises(Exception) as exc_info:
+                gitdl.download_exact_repo(repo)
+            assert str(exc_info.value) == "Repository Not Found."
