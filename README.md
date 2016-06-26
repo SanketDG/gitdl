@@ -38,3 +38,19 @@ $ gitdl search "intermediate python"
 ```
 
 This will search GitHub and present the results in a tabular format.
+
+## Development
+
+### Testing
+
+To run the tests:
+
+```
+$ py.test
+```
+
+To run the tests with coverage:
+
+```
+$ py.test --cov
+```
