@@ -8,6 +8,7 @@ Tests for `gitdl` module.
 
 import json
 import os
+import unittest
 
 import pytest
 
@@ -19,7 +20,7 @@ import requests_mock
 from gitdl import gitdl
 
 
-class TestGitdl:
+class TestGitdl(unittest.TestCase):
 
     def test_params_invalid_api_token(self):
         with patch.dict('os.environ', {}):
@@ -53,3 +54,10 @@ class TestGitdl:
             with pytest.raises(Exception) as exc_info:
                 gitdl.download_exact_repo(repo)
             assert str(exc_info.value) == "Repository Not Found."
+
+    def test_get_size(self):
+        with requests_mock.mock() as mocker:
+            mocker.get("mock://google.com",
+                       headers={'Content-Length': '42'})
+            r = requests.get("mock://google.com")
+        self.assertEqual(gitdl.get_size(r), 0.04)
