@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
+from gitdl import __version__
 
 setup(
     name='gitdl',
-    version='gitdl.__version__',
+    version=__version__,
     description='Download git repositories locally',
     long_description="",
     author='Sanket Dasgupta',
