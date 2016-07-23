@@ -9,11 +9,11 @@ cache:
         - $HOME/.pip-cache/
 # command to install dependencies
 install:
-  - pip install .
+  - pip install -e .
   - pip install -r requirements.txt
   - pip install coveralls
 # command to run tests
 script:
-  - py.test --cov
+  py.test
 after_success:
-  - coveralls
+  coveralls
