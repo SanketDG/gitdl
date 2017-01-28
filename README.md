@@ -2,6 +2,8 @@
 
 Download zips of github repositories easily.
 
+[![Build Status](https://travis-ci.org/SanketDG/gitdl.svg?branch=master)](https://travis-ci.org/SanketDG/gitdl) [![Coverage Status](https://coveralls.io/repos/github/SanketDG/gitdl/badge.svg?branch=master)](https://coveralls.io/github/SanketDG/gitdl?branch=master)
+
 ## Installation
 
 Clone the repository and cd to it. Then do:
