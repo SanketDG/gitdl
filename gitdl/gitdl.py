@@ -126,9 +126,12 @@ def download_zip_and_extract(repo_json):  # pragma: no cover
         repo_json['html_url'], default_branch)
     repo_name = repo_json['name']  # stores the repository name
 
-    urlretrieve(download_url, "{}.zip".format(repo_name))
+    try:
+        urlretrieve(download_url, "{}.zip".format(repo_name))
+        work_them_files(repo_name, default_branch)
 
-    work_them_files(repo_name, default_branch)
+    except KeyboardInterrupt:
+        print("Download Interrupted.")
 
 
 def download_exact_repo(repo):  # pragma: no cover
