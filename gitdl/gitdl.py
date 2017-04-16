@@ -8,7 +8,7 @@ Arguments:
 Usage:
   gitdl search <REPO> [--sort <sort_field> ( --asc | --desc )]
   gitdl search <REPO> [--per_page <display>]
-  gitdl <REPO> [-e]
+  gitdl <REPO>... [-e]
   gitdl -h | --help
   gitdl --version
 
@@ -182,10 +182,12 @@ def main():  # pragma: no cover
         table, headers = tabulate_view(results)
         print(tabulate(table, headers, tablefmt="grid"))
     elif args["--exact"]:
-        download_exact_repo(repo)
+        for _repo in repo:
+            download_exact_repo(_repo)
     else:
-        first_result = get_search_results(repo, only_first=True)
-        download_zip_and_extract(first_result)
+        for _repo in repo:
+            first_result = get_search_results(_repo, only_first=True)
+            download_zip_and_extract(first_result)
 
 
 if __name__ == "__main__":
